@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,19 +53,23 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SignInScreen(modifier: Modifier = Modifier) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var signedIn by remember { mutableStateOf(false) }
+    var Email by remember { mutableStateOf("") }
+    var Password by remember { mutableStateOf("") }
+    var SignedIn by remember { mutableStateOf(false) }
 
 
-    if (signedIn) {
-
+    if (SignedIn) {
+        SignInSuccessScreen(Email) {
+            SignedIn = false
+            Email = ""
+            Password = ""
+        }
     } else {
-        SignInForm(email, password) {
+        SignInForm(Email, Password) {
             if (it.isNotBlank()) {
-                email = email
-                password = password
-                signedIn = true
+                Email = Email
+                Password = Password
+                SignedIn = true
             }
         }
     }
@@ -79,16 +84,16 @@ fun SignInForm(email: String, password: String, onSignIn: (String) -> Unit) {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OutlinedTextField(
+        TextField(
             value = email,
-            onValueChange = { it },
+            onValueChange = {},
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = password,
-            onValueChange = { it },
+            onValueChange = {},
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -99,7 +104,23 @@ fun SignInForm(email: String, password: String, onSignIn: (String) -> Unit) {
     }
 }
 
-
+@Composable
+fun SignInSuccessScreen(email: String, SignInScreen: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Sign In success")
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "email: $email")
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = SignInScreen) {
+            Text(text = "Sign Out")
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
